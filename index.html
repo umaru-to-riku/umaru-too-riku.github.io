@@ -5,8 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      #message {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 18px;
+        text-align: center;
+        z-index: 9999;
+        width: 80%;
+      }
+    </style>
   </head>
   <body>
+    <div id="message">【解説】火災時にエレベーターを使ってはいけません！階段で避難しましょう。</div>
+
     <a-scene
       mindar-image="imageTargetSrc: ./target.mind;"
       color-space="sRGB"
@@ -29,6 +48,7 @@
 
     <script>
       const scene = document.querySelector('a-scene');
+      const msg = document.getElementById('message');
 
       scene.addEventListener('loaded', () => {
         const canvas = scene.canvas;
@@ -48,7 +68,11 @@
           const intersects = raycaster.intersectObject(box, true);
 
           if (intersects.length > 0) {
-            alert('【解説】火災時にエレベーターを使ってはいけません！階段で避難しましょう。');
+            msg.style.display = 'block';
+            // 3秒後に自動で消える
+            setTimeout(() => {
+              msg.style.display = 'none';
+            }, 3000);
           }
         }, { passive: false });
       });
