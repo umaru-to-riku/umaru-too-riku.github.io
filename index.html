@@ -7,7 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
       #message {
-        display: none;
+        opacity: 0;
+        transition: opacity 0.5s;
         position: fixed;
         bottom: 30px;
         left: 50%;
@@ -68,11 +69,10 @@
           const intersects = raycaster.intersectObject(box, true);
 
           if (intersects.length > 0) {
-            msg.style.display = 'block';
-            // 3秒後に自動で消える
-            setTimeout(() => {
-              msg.style.display = 'none';
-            }, 3000);
+          msg.style.opacity = '1'; // displayの代わり
+           setTimeout(() => {
+  msg.style.opacity = '0';
+}, 3000);
           }
         }, { passive: false });
       });
