@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-particle-system-component@1.1.3/dist/aframe-particle-system-component.min.js"></script>
     <style>
       #message {
         opacity: 0;
@@ -40,7 +41,7 @@
 
         <a-entity
           position="0 0 0"
-          <a-sphere position="0 0 0" radius="0.3" color="red"></a-sphere>
+          particle-system="preset: fire; particleCount: 200; maxAge: 1.5; size: 0.1">
         </a-entity>
 
         <a-box id="danger-target"
