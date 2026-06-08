@@ -1,103 +1,86 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8"> <!-- 文字コードをUTF-8に設定 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- スマホ表示の最適化 -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script> <!-- A-Frame（3D/AR表示ライブラリ）の読み込み -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script> <!-- MindAR（画像認識ARライブラリ）の読み込み -->
-    <script src="https://cdn.jsdelivr.net/npm/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js"></script> <!-- パーティクル（炎エフェクト）ライブラリの読み込み -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js"></script>
     <style>
-      #message { /* 解説メッセージボックスのスタイル定義 */
-        opacity: 0; /* 最初は非表示（透明） */
-        transition: opacity 0.5s; /* 表示・非表示を0.5秒かけてフェード */
-        position: fixed; /* 画面上の固定位置に表示 */
-        bottom: 30px; /* 画面下から30pxの位置 */
-        left: 50%; /* 左から50%（中央寄せの基準） */
-        transform: translateX(-50%); /* 中央に正確に合わせる */
-        background: rgba(0,0,0,0.8); /* 半透明の黒背景 */
-        color: white; /* 文字色を白に */
-        padding: 20px 30px; /* 内側の余白 */
-        border-radius: 12px; /* 角を丸くする */
-        font-size: 18px; /* 文字サイズ */
-        text-align: center; /* 文字を中央揃え */
-        z-index: 9999; /* 最前面に表示 */
-        width: 80%; /* 横幅を画面の80%に */
+      #message {
+        opacity: 0;
+        transition: opacity 0.5s;
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 18px;
+        text-align: center;
+        z-index: 9999;
+        width: 80%;
       }
     </style>
   </head>
   <body>
-    <!-- タップ時に表示される解説テキスト -->
     <div id="message">【解説】火災時にエレベーターを使ってはいけません！階段で避難しましょう。</div>
 
     <a-scene
-      mindar-image="imageTargetSrc: ./target.mind;" <!-- 認識させる画像マーカーのファイル指定 -->
-      color-space="sRGB" <!-- 色空間の設定（色再現を正確に） -->
-      renderer="colorManagement: true, physicallyCorrectLights" <!-- 物理ベースの照明を有効化 -->
-      vr-mode-ui="enabled: false" <!-- VRモードのUIボタンを非表示 -->
-      device-orientation-permission-ui="enabled: false" <!-- デバイス向き許可ダイアログを非表示 -->
+      mindar-image="imageTargetSrc: ./target.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
     >
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera> <!-- カメラ設定（手動回転を無効化） -->
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0"> <!-- マーカー0番を認識したときに表示するエンティティ -->
+      <a-entity mindar-image-target="targetIndex: 0">
 
-        <!-- 炎パーティクルエフェクト -->
         <a-entity
-          position="0 0 0" <!-- マーカーの中心に配置 -->
-          particle-system="
-            preset: default; /* パーティクルの基本設定を使用 */
-            color: #ff4400,#ff8800,#ffcc00; /* 炎の色（赤→オレンジ→黄）のグラデーション */
-            particleCount: 300; /* 同時に表示するパーティクルの数 */
-            maxAge: 1.5; /* パーティクル1つの寿命（秒） */
-            velocityValue: 0 2 0; /* パーティクルの移動方向（上方向に流れる） */
-            velocitySpread: 0.5 0.5 0.5; /* 広がりのランダム幅（炎のゆらぎ） */
-            size: 0.15; /* パーティクル1つの大きさ */
-            opacity: 0.8; /* パーティクルの透明度 */
-            blending: additive; /* 加算合成（重なると明るくなる炎らしい表現） */
-            accelerationValue: 0 0.5 0; /* 上方向への加速（炎が勢いよく上がる） */
-          ">
+          position="0 0 0"
+          particle-system="preset: default; color: #ff4400,#ff8800,#ffcc00; particleCount: 300; maxAge: 1.5; velocityValue: 0 2 0; velocitySpread: 0.5 0.5 0.5; size: 0.15; opacity: 0.8; blending: additive; accelerationValue: 0 0.5 0">
         </a-entity>
 
-        <!-- タップ判定用の透明ボックス（炎の中心付近に配置） -->
         <a-box id="danger-target"
-          position="0 0.3 0" <!-- 炎の中心あたりに配置 -->
-          width="0.6" height="0.6" depth="0.6" <!-- タップ判定の範囲（大きめに設定） -->
-          opacity="0" <!-- 見えない状態にする -->
-          visible="true"> <!-- ただしタップ判定は有効のままにする -->
+          position="0 0.3 0"
+          width="0.6" height="0.6" depth="0.6"
+          material="opacity: 0; transparent: true">
         </a-box>
 
       </a-entity>
     </a-scene>
 
     <script>
-      const scene = document.querySelector('a-scene'); // a-sceneを取得
-      const msg = document.getElementById('message'); // メッセージボックスを取得
+      const scene = document.querySelector('a-scene');
+      const msg = document.getElementById('message');
 
-      scene.addEventListener('loaded', () => { // シーンの読み込みが完了したら実行
-        const canvas = scene.canvas; // 描画キャンバスを取得
+      scene.addEventListener('loaded', () => {
+        const canvas = scene.canvas;
 
-        canvas.addEventListener('touchstart', (e) => { // 画面タッチ開始を検知
-          e.preventDefault(); // デフォルトのタッチ動作（スクロールなど）をキャンセル
-          const touch = e.touches[0]; // 最初の指のタッチ情報を取得
-          const rect = canvas.getBoundingClientRect(); // キャンバスの画面上の位置を取得
-
-          // タッチ座標をWebGLの正規化デバイス座標（-1〜1）に変換
+        canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const rect = canvas.getBoundingClientRect();
           const x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
           const y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
 
-          const camera = scene.camera; // カメラオブジェクトを取得
-          const raycaster = new THREE.Raycaster(); // レイキャスター（タップ方向に光線を飛ばす）を作成
-          raycaster.setFromCamera({ x, y }, camera); // カメラからタップ方向に光線をセット
+          const camera = scene.camera;
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera({ x, y }, camera);
 
-          const box = document.querySelector('#danger-target').object3D; // 透明ボックスの3Dオブジェクトを取得
-          const intersects = raycaster.intersectObject(box, true); // 光線とボックスの交差判定
+          const box = document.querySelector('#danger-target').object3D;
+          const intersects = raycaster.intersectObject(box, true);
 
-          if (intersects.length > 0) { // タップがボックスに当たった場合
-            msg.style.opacity = '1'; // メッセージを表示（フェードイン）
+          if (intersects.length > 0) {
+            msg.style.opacity = '1';
             setTimeout(() => {
-              msg.style.opacity = '0'; // 3秒後にメッセージを非表示（フェードアウト）
+              msg.style.opacity = '0';
             }, 3000);
           }
-        }, { passive: false }); // passive:falseでpreventDefaultを有効にする
+        }, { passive: false });
       });
     </script>
   </body>
